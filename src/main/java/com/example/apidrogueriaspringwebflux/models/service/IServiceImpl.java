@@ -117,7 +117,8 @@ public class IServiceImpl implements IService{
     }
 
     @Override
-    public void deleteFactura(Factura factura) {
+    public void deleteFactura(String id) {
 
+        facturaDao.deleteById(id);
     }
 }

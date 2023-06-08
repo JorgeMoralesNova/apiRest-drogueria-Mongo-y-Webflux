@@ -37,7 +37,7 @@ public interface IService {
 
     void saveFactura(Factura factura);
 
-    void deleteFactura(Factura factura);
+    void deleteFactura(String id);
 
 
 
