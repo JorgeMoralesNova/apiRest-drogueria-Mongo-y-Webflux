@@ -11,6 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import reactor.core.publisher.Flux;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @SpringBootApplication
 public class ApiDrogueriaSpringWebfluxApplication implements CommandLineRunner {
 
@@ -31,11 +34,24 @@ public class ApiDrogueriaSpringWebfluxApplication implements CommandLineRunner {
 
         drop.dropCollection("productos").subscribe();
 
-        Flux<Producto> productos= Flux.just(new Producto("ibuprofeno", 3000),
-                new Producto("acetaminofen", 1200));
+       // Set<String> NombresNoRepetidos= new HashSet<String>();
 
+        Flux<Producto> productos = Flux.just(
+                new Producto("ibuprofeno", 3000),
+                new Producto("acetaminofen", 1200),
+                new Producto("paracetamol", 2500),
+                new Producto("aspirina", 1500),
+                new Producto("omeprazol", 1800),
+                new Producto("vitamina C", 1000),
+                new Producto("gel antibacterial", 500),
+                new Producto("mascarilla", 1500),
+                new Producto("desinfectante", 2000),
+                new Producto("guantes", 800)
+        );
 
-        productos.doOnNext(producto -> {log.info(producto.getNombre().concat(" ".concat(producto.getPrecio().toString())));}).repeat(3)
+        productos
+                //.filter(producto -> NombresNoRepetidos.add(producto.getNombre()))
+                .doOnNext(producto -> {log.info(producto.getNombre().concat(" ".concat(producto.getPrecio().toString())));})
                 .flatMap(producto -> productoDao.save(producto)).subscribe(producto-> log.info("insert " + producto.getNombre()) );
 
 

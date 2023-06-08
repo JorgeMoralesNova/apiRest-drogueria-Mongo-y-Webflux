@@ -6,6 +6,7 @@ import com.example.apidrogueriaspringwebflux.models.document.Factura;
 import com.example.apidrogueriaspringwebflux.models.document.Producto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -42,26 +43,24 @@ public class IServiceImpl implements IService{
         return productoDao.findProductoByPrecio(precio);
     }
 
-    @Override
-    public void saveProducto(Producto producto) {
 
-        productoDao.save(producto);
+    @Override
+    public Mono<Producto> saveProducto(Producto producto) {
+
+        return productoDao.save(producto);
 
     }
 
     @Override
-    public void actualizar(String id, Producto producto) {
-
-        Mono<Producto> productoMono=findProductoByID(id);
-
-        productoMono.subscribe(produc ->{
-            produc.setNombre(producto.getNombre());
-            produc.setDescripcion(producto.getDescripcion());
-            produc.setPrecio(producto.getPrecio());
-            produc.setFecha_vencimiento(producto.getFecha_vencimiento());
-
-            productoDao.save(produc).subscribe();
-        });
+    public Mono<Producto> actualizar(String id, Producto producto) {
+        return findProductoByID(id)
+                .flatMap(produc -> {
+                    produc.setNombre(producto.getNombre());
+                    produc.setDescripcion(producto.getDescripcion());
+                    produc.setPrecio(producto.getPrecio());
+                    produc.setFecha_vencimiento(producto.getFecha_vencimiento());
+                    return productoDao.save(produc);
+                });
     }
 
     @Override

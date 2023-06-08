@@ -2,6 +2,7 @@ package com.example.apidrogueriaspringwebflux.models.service;
 
 import com.example.apidrogueriaspringwebflux.models.document.Factura;
 import com.example.apidrogueriaspringwebflux.models.document.Producto;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -17,9 +18,10 @@ public interface IService {
 
     Flux<Producto> findProductosByPrecio(Integer precio);
 
-    void saveProducto(Producto producto);
 
-    void actualizar(String id, Producto producto);
+    Mono<Producto> saveProducto(Producto producto);
+
+    Mono<Producto> actualizar(String id, Producto producto);
 
     void deleteProducto(String id);
 
